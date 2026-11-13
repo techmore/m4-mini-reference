@@ -13,6 +13,13 @@ a 2026-11-13 Fedora run-59 pass. NixOS remains unmeasured: its one-shot was
 cleared after the mandatory gate refused admission. Missing cells are not
 estimates.
 
+A same-day follow-up intended to correct the 7-Zip-version and fio-job
+mismatches stopped before measurement: Fedora was reachable and presented its
+expected host identity, but rejected the provisioned test-runner
+authentication even after one bounded recovery reset.  Consequently there are
+still no fair 7-Zip, fair fio, NixOS, or small-model ML numbers.  The values
+below remain provisional historical results and were not relabeled as fair.
+
 The J773g under test is a Mac16,10 with an Apple M4 (10 CPU cores: 4
 performance and 6 efficiency; 10 GPU cores), 16 GB unified memory, and a 256
 GB internal Apple SSD. A planned simultaneous A/B with a second macOS Mini is
