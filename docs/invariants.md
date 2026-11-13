@@ -83,9 +83,9 @@
 
 - **Symptom:** nvme@40000 err=-19; U-Boot sees no NVMe.
 - **Cause:** Live post-M4 ANS was not taken over before a non-Linux payload.
-- **Required state:** Aura includes f2a8b52b post-M4 ANS takeover.
+- **Required state:** Aura includes f2a8b52b post-M4 ANS takeover (rebased as 95ae53ca in the v4 isolation series).
 - **Applies to:** aura, fedora-aurora, nixos-aurora, alarm-aurora, omarchy-mac-pkgs, aurora-installer
-- **Where:** techmore/aura f2a8b52b
+- **Where:** techmore/aura f2a8b52b / 95ae53ca
 - **Upstream:** carried
 - **Evidence:** 2026-11-13 first seen; 2026-11-13 last verified; `private evidence receipt`
 - **Machine check:** `aura_commit`

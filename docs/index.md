@@ -18,6 +18,7 @@ evidence is marked **unverified**.
   PMGR overlay root cause.
 - [NixOS](nixos.md) — current boot path, Bugs A/B, ESP identity, suspend, and
   image recipe.
+- [Benchmarks](benchmarks.md) — public cross-OS baseline and qualification status.
 - [Upstream status](upstream-status.md) — public carried branches, topic dependencies, and drift.
 
 This public edition contains only scrubbed, non-sensitive material. The evidence ledger and maintenance tooling remain private.
