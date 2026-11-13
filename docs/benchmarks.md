@@ -13,6 +13,12 @@ macOS baseline and an older Aurora-kernel STREAM run are available, but a
 complete NixOS Aurora pass has not yet been admitted through the recovery-safe
 boot gate. Missing cells are not estimates.
 
+The J773g under test is a Mac16,10 with an Apple M4 (10 CPU cores: 4
+performance and 6 efficiency; 10 GPU cores), 16 GB unified memory, and a 256
+GB internal Apple SSD. A planned simultaneous A/B with a second macOS Mini is
+same-SKU evidence only after those CPU, memory, and storage characteristics
+are confirmed to match.
+
 | Workload | macOS | Aurora Linux evidence | Ratio (Aurora/macOS) |
 |---|---:|---:|---:|
 | STREAM Triad, 1.5 GiB | 93.97 [93.62, 94.35] GB/s | 95.35 [95.05, 95.68] GB/s | 1.015x |
