@@ -22,7 +22,7 @@
 | `boot-aura-try-two-line` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | FAIL | N-A | FAIL | N-A |
 | `boot-grub-visible` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | N-A | N-A | FAIL | N-A |
 | `boot-promote-passing-fix` | N-A | N-A | N-A | N-A | N-A | N-A | FAIL | N-A | PASS | N-A |
-| `uboot-known-good-pin` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | N-A | FAIL | FAIL | N-A |
+| `uboot-comparison-unverified` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | N-A | FAIL | FAIL | N-A |
 | `nixos-esp-stable-nofail` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | N-A | N-A | FAIL | N-A |
 | `nixos-no-idle-suspend` | N-A | N-A | PASS | FAIL | FAIL | FAIL | N-A | N-A | FAIL | N-A |
 | `nixos-apple-wdt-nonfatal` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | N-A | N-A | FAIL | N-A |
@@ -199,17 +199,17 @@
 - **Machine check:** `content`
 - **Fix:** Atomically install the passing artifact and retain a rollback copy.
 
-### uboot-known-good-pin
+### uboot-comparison-unverified
 
-- **Symptom:** Fails before GRUB on J773g.
-- **Cause:** Current 8295be11 lineage regresses the exact Aura tuple.
-- **Required state:** Use known-good e22da7f0; reject 8295be11 until fixed.
+- **Symptom:** Test A returned to macOS before GRUB, but changed both Aura and U-Boot.
+- **Cause:** Unverified: the failed Stage 2 lost Aura's f2a8b52b ANS takeover; e22da7f0 is a raw SHA-256 of a TEST ONLY debug build, not a U-Boot commit.
+- **Required state:** Run two boots with the identical Aura, DTB, kernel and Stage 2 layout, changing only U-Boot aurora-wip 25cbb0f0 versus u-boot #48 cfebc31d.
 - **Applies to:** u-boot, fedora-aurora, nixos-aurora, alarm-aurora, omarchy-mac-pkgs, aurora-installer
-- **Where:** Stage 2 pins in every distro/installer
-- **Upstream:** carried
+- **Where:** aurora-silicon/u-boot aurora-wip 25cbb0f0 and PR #48 cfebc31d
+- **Upstream:** unverified; #48 open
 - **Evidence:** 2026-11-13 first seen; 2026-11-13 last verified; `private evidence receipt`
-- **Machine check:** `uboot_pin`
-- **Fix:** Pin e22da7f0 and open a bounded regression bisect.
+- **Machine check:** `uboot_two_boot_comparison`
+- **Fix:** Do not pin or blame either build from Test A; record the two single-variable hardware receipts first.
 
 ### nixos-esp-stable-nofail
 
