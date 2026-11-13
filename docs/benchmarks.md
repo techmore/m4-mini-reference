@@ -8,10 +8,10 @@ maximum. Tool and model versions are pinned, inputs are hashed, and each run
 records OS, kernel, compiler, CPU topology, thermal state, and available power
 telemetry.
 
-The current qualified public comparison is intentionally incomplete. A stock
-macOS baseline and an older Aurora-kernel STREAM run are available, but a
-complete NixOS Aurora pass has not yet been admitted through the recovery-safe
-boot gate. Missing cells are not estimates.
+The current comparison combines the committed 2026-11-07 macOS baseline with
+a 2026-11-13 Fedora run-59 pass. NixOS remains unmeasured: its one-shot was
+cleared after the mandatory gate refused admission. Missing cells are not
+estimates.
 
 The J773g under test is a Mac16,10 with an Apple M4 (10 CPU cores: 4
 performance and 6 efficiency; 10 GPU cores), 16 GB unified memory, and a 256
@@ -19,18 +19,32 @@ GB internal Apple SSD. A planned simultaneous A/B with a second macOS Mini is
 same-SKU evidence only after those CPU, memory, and storage characteristics
 are confirmed to match.
 
-| Workload | macOS | Aurora Linux evidence | Ratio (Aurora/macOS) |
+| Workload | macOS 2026-11-07 | Fedora run 59 | Fedora/macOS |
 |---|---:|---:|---:|
-| STREAM Triad, 1.5 GiB | 93.97 [93.62, 94.35] GB/s | 95.35 [95.05, 95.68] GB/s | 1.015x |
-| 7-Zip, one thread | 11,606 [11,406, 11,725] MIPS | not measured | — |
-| 7-Zip, ten threads | 80,924 [79,644, 81,548] MIPS | not measured | — |
-| Sequential 1 MiB read, QD1 | 2,610.92 [2,608.54, 2,612.81] MB/s | not measured | — |
-| Random 4 KiB read, QD32 | 163,132 [161,919, 163,750] IOPS | not measured | — |
+| STREAM Triad | 93.97 [93.62, 94.35] GB/s | 92.83 [90.51, 95.33] GB/s | 0.988x |
+| 7-Zip, one thread | 11,606 [11,406, 11,725] MIPS | 4,317 [4,316, 4,323] MIPS | 0.372x |
+| 7-Zip, ten threads | 80,924 [79,644, 81,548] MIPS | 41,681 [41,562, 41,947] MIPS | 0.515x |
+| Sequential read QD1 | 2,610.92 [2,608.54, 2,612.81] MB/s | 336.53 [307.53, 1,160.75] MB/s | 0.129x |
+| Random 4 KiB read QD32 | 163,132 [161,919, 163,750] IOPS | 8,735 [8,678, 8,948] IOPS | 0.054x |
 
-The STREAM result shows no regression in the older Aurora-kernel run: its
-median is 1.5% above macOS. It does not qualify NixOS Aurora as a whole. CPU,
-compile, storage, GPU, boot-time, and power comparisons remain open until the
-same suite completes on the current NixOS image.
+STREAM is within 1.2% of macOS. The large 7-Zip and storage gaps are candidate
+findings: tool versions and fio scratch sizes still need exact matching before
+they become qualified invariants. NixOS, GPU, ML, boot-time, and power cells
+remain open.
+
+## ML next run
+
+The bounded 16 GB matrix uses Qwen2.5 0.5B/1.5B/3B, Llama 3.2 1B/3B, and a
+Phi-mini-class model in Q4_K_M, plus Q8_0 and F16 for the smallest model.
+llama.cpp CPU and Vulkan measure pp512 and tg128 separately; Linux MLX repeats
+the same models where supported. Every model and prompt is SHA-256 recorded.
+
+Microbenchmarks cover 512/1024/2048/4096 square GEMM in fp32/fp16/bf16 where
+supported, batch-1 GEMV, batched small tensors, and a ResNet-like conv2d.
+MobileNetV2, ResNet-50, and whisper tiny/base use fixed hashed inputs. The
+macOS counterparts are MLX/Metal, Core ML CPU/ANE/all policies, PyTorch MPS,
+and tensorflow-metal. omarchy-ANE results are accepted only with proven J773g
+device placement.
 
 ## Candidate performance investigations
 
