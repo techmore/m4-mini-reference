@@ -8,6 +8,8 @@ evidence is marked **unverified**.
 
 ## Topics
 
+- [M4 invariants](invariants.md) — cross-repository must-haves and the latest
+  machine-check matrix.
 - [Boot chain and recovery](boot-chain.md) — stages, tuples, trial gate,
   proxy recovery, and the stale trial-state trap.
 - [HDMI/display](hdmi-display.md) — concise Linux bring-up order and exact
