@@ -2,31 +2,33 @@
 
 > Generated from `invariants.yaml`; do not hand-edit.
 
-20 fail-closed requirements shared across the M4 stack.
+22 fail-closed requirements shared across the M4 stack.
 
 ## Last cross-repository audit
 
 | Invariant | linux | linux-aurora | fedora-aurora | nixos-aurora | alarm-aurora | omarchy-mac-pkgs | aura | u-boot | aurora-installer | mesa |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `kernel-ctxr-execmem` | FAIL | FAIL | PASS | PASS | PASS | FAIL | N-A | N-A | N-A | N-A |
+| `kernel-ctxr-execmem` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
 | `kernel-topic-order` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
 | `kernel-pcie-pmgr-seven` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
-| `kernel-package-modules` | N-A | N-A | PASS | PASS | PASS | FAIL | N-A | N-A | N-A | N-A |
-| `aura-post-m4-ans-takeover` | N-A | N-A | PASS | FAIL | FAIL | FAIL | FAIL | N-A | FAIL | N-A |
-| `aura-hdmi-rail-positive-read` | N-A | N-A | N-A | N-A | N-A | N-A | FAIL | N-A | N-A | N-A |
-| `aura-hpd-delay-replay` | N-A | N-A | N-A | N-A | N-A | N-A | PASS | N-A | N-A | N-A |
-| `aura-bounded-dcp-polling` | N-A | N-A | N-A | N-A | N-A | N-A | FAIL | N-A | N-A | N-A |
-| `aura-sid23-locked-dart-dva` | FAIL | FAIL | N-A | N-A | N-A | N-A | PASS | N-A | N-A | N-A |
-| `aura-ans-takeover-scope` | N-A | N-A | N-A | N-A | N-A | N-A | PASS | N-A | N-A | N-A |
-| `boot-clear-trial-state` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | FAIL | N-A | PASS | N-A |
-| `boot-aura-try-two-line` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | FAIL | N-A | FAIL | N-A |
-| `boot-grub-visible` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | N-A | N-A | FAIL | N-A |
-| `boot-promote-passing-fix` | N-A | N-A | N-A | N-A | N-A | N-A | FAIL | N-A | PASS | N-A |
-| `uboot-comparison-unverified` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | N-A | FAIL | FAIL | N-A |
-| `nixos-esp-stable-nofail` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | N-A | N-A | FAIL | N-A |
-| `nixos-no-idle-suspend` | N-A | N-A | PASS | FAIL | FAIL | FAIL | N-A | N-A | FAIL | N-A |
-| `nixos-apple-wdt-nonfatal` | N-A | N-A | FAIL | FAIL | FAIL | FAIL | N-A | N-A | FAIL | N-A |
-| `display-dcp-handoff-topic` | FAIL | FAIL | FAIL | FAIL | FAIL | FAIL | N-A | N-A | N-A | N-A |
+| `kernel-package-modules` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `aura-post-m4-ans-takeover` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `aura-hdmi-rail-positive-read` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `aura-hpd-delay-replay` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `aura-bounded-dcp-polling` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `aura-sid23-locked-dart-dva` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `aura-ans-takeover-scope` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `boot-clear-trial-state` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `boot-aura-try-two-line` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `boot-grub-visible` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `boot-promote-passing-fix` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `uboot-comparison-unverified` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `nixos-esp-stable-nofail` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `nixos-no-idle-suspend` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `nixos-apple-wdt-nonfatal` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `display-dcp-handoff-topic` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `boot-root-identity` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
+| `apple-pmp-thermal` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
 | `ops-preserve-toolchains-inputs` | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A | N-A |
 
 ## Registry
@@ -258,6 +260,30 @@
 - **Evidence:** 2026-11-11 first seen; 2026-11-13 last verified; `private evidence receipt`
 - **Machine check:** `content`
 - **Fix:** Carry the dcp-handoff topic with the Aura Stage 2.
+
+### boot-root-identity
+
+- **Symptom:** The gate reports a clean known-good boot while Linux mounted a different root or regenerated SSH identity.
+- **Cause:** Postflight and recovery checked the kernel and selector but not the mounted root filesystem UUID, subvolume and baked host key as one identity tuple.
+- **Required state:** Every postflight and recovery snapshot exactly matches the configured root UUID, subvolume and full SSH host-key fingerprint for the observed OS.
+- **Applies to:** aurora-installer, all-j773g-dist-images
+- **Where:** trial-gate postflight/recovery and every J773g image identity manifest
+- **Upstream:** carried
+- **Evidence:** 2026-11-13 first seen; 2026-11-13 last verified; `private evidence receipt`
+- **Machine check:** `content`
+- **Fix:** Bake and record the root identity tuple, collect it from the live root, and fail postflight/recovery closed on any mismatch.
+
+### apple-pmp-thermal
+
+- **Symptom:** P cores stay at 1.800 GHz and E cores at 1.860 GHz under sustained load despite higher valid OPPs.
+- **Cause:** T8132 cpufreq keeps the bootstrap FREQ_QOS cap until the Apple PMP thermal driver claims ownership; the shipped kernel disabled that driver.
+- **Required state:** CONFIG_APPLE_PMP_THERMAL=y in every J773g kernel configuration, with thermal ownership and safe temperatures verified before performance promotion.
+- **Applies to:** linux, linux-aurora, fedora-aurora, nixos-aurora, alarm-aurora, omarchy-mac-pkgs
+- **Where:** every J773g distro and Omarchy kernel config
+- **Upstream:** carried; hardware validation pending
+- **Evidence:** 2026-11-13 first seen; 2026-11-13 last verified; `private evidence receipt`
+- **Machine check:** `kernel_config`
+- **Fix:** Enable CONFIG_APPLE_PMP_THERMAL, boot through the trial gate, and verify the driver claims thermal ownership before sustained load.
 
 ### ops-preserve-toolchains-inputs
 
