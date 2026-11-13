@@ -15,6 +15,24 @@ contracts), `private evidence receipt`, and
 `private evidence receipt` on
 notes branch `j773g/boot-hdmi-20261112@bec15a4d6106`.
 
+## J773g partition map
+
+| GPT entry | Role | Identity | State |
+|---|---|---|---|
+| p1–p3 | Apple iBoot, macOS, Aura stub APFS | fixed GPT GUIDs in the private receipt | unchanged |
+| p4 | Aura ESP | PARTUUID `d963b95f-801f-42d2-afa0-b4ddbc427611` | mounted `/boot/efi` |
+| p5 | Fedora `/boot` | UUID `fc8e1aa7-1a0d-471e-b210-3d2bde0d77fd` | unchanged |
+| p6 | Fedora root | UUID `fd7df531-76ae-44e5-a8be-ac6ed5f28ffa`, subvolume `root` | run 59 |
+| p7 | retired Omarchy APFS stub | PARTUUID `c25f590a-9fd6-4e13-a8e9-6a4b762edb5a` | unchanged |
+| p8 | retired Omarchy ESP | former PARTUUID `bba7efa2-57b4-4b71-a1a2-609b9ca2592f` | **deleted 2026-11-13; 500 MiB free** |
+| p9 | NixOS `/boot` | UUID `7179b1dc-ff4c-44e9-8c77-114d3135455d` | unchanged |
+| p10 | NixOS root | UUID `04aa1ded-e761-4627-b95c-5d9d937f7016`, subvolume `root` | unchanged |
+| p11 | Apple RecoveryOSContainer | PARTUUID `0954d689-6d86-4c66-87fe-cd6d5852465d` | unchanged |
+
+The p8 deletion followed a full content inventory, GPT backup, verified compressed
+partition image, and exact before/after comparison of every other partition's
+start, end, type, and unique GUID. No reboot was required.
+
 ## Known-good and current results
 
 | Tuple | Result | Source |
