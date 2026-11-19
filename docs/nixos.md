@@ -1,6 +1,39 @@
 # NixOS on J773g
 
-## How it boots today
+> **This page describes the 26.6.2 (25G83) install as of 2026-11-13.** The
+> machine has since been reinstalled on the macOS 27.2 (26B123) stub. What is
+> known about NixOS there is in the next section; it is **tested locally, not
+> yet upstream**.
+
+## On the 27.2 stub
+
+State on 2026-11-18, one machine, local builds. Background in
+[Booting on the 27.2 stub](booting-27-2-stub.md).
+
+- **It boots unattended to KDE**, through Stage 1, Stage 2, U-Boot and GRUB,
+  with the root filesystem on btrfs, Ethernet up and SSH reachable about 26
+  seconds after a restart.
+- **Not as installed.** The image contains a prebuilt kernel made for the
+  26.6.2 stub. On 27.2 that kernel resets within seconds. The system came up
+  only after the kernel image on the boot partition was replaced by hand with
+  a 27.2-capable build (the Stage 2 on the ESP was replaced as well; whether
+  that was needed is not established). The image has to be rebuilt around
+  such a kernel before a fresh install can boot by itself.
+- **Two services fail on every boot** and the system reports itself as
+  degraded. See the table below.
+- **Bug A below is not seen on 27.2.** The ESP mounts from the identifier in
+  `fstab`, and the `apple_wdt` step in the initrd succeeds.
+- **The desktop is software-rendered** and very slow at 4K; there is no GPU
+  driver for the 27.2 firmware.
+- **Suspend is untested** on 27.2. The advice under "Suspend is disabled"
+  still applies.
+
+| Failing service | Effect | Cause |
+|---|---|---|
+| Vendor firmware service | Wi-Fi and Bluetooth drivers stay held back, so neither works | The script loads a driver for the always-on processor, which this kernel does not have and which the loader disables on this board, and it stops there. A change to the script passes its unit test but has not been booted |
+| Firewall | No packet filter is active | The test kernel lacks a netfilter match module the NixOS firewall always uses. This is a kernel configuration fault, not an image fault |
+
+## How it booted on 26.6.2
 
 The proven route keeps the run-59 Stage 2 live, uses a GRUB one-shot to select
 the NixOS BLS entry, and boots the NixOS system/root image with the run-59

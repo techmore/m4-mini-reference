@@ -1,5 +1,12 @@
 # Boot chain and recovery
 
+> **This page describes the 26.6.2 (25G83) install as of 2026-11-13.** The
+> machine has since been reinstalled on the macOS 27.2 (26B123) stub, so the
+> partition map and the run-59 tuples below describe the earlier install. The
+> chain and the one-shot selectors are unchanged and were used for the 27.2
+> tests; see [Booting on the 27.2 stub](booting-27-2-stub.md) (tested
+> locally, not yet upstream).
+
 ## The chain
 
 ```text

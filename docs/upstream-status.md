@@ -6,6 +6,30 @@ Upstream work is **FROZEN**. A listed PR, issue, or queued action is status only
 
 Source: public GitHub branch and comparison APIs.
 
+## 27.2 stub work (2026-11-18): tested locally, not yet upstream
+
+The work described in [Booting on the 27.2 stub](booting-27-2-stub.md) exists
+as local branches only. It is not in any pull request, the open pull requests
+below have not been updated with it, and nothing here is upstream support for
+the J773g. The fork-branch table further down was generated on 2026-11-13 and
+does not include these branches.
+
+| Piece | Repository | Tested locally on 27.2 | Where it is headed |
+|---|---|---|---|
+| Kernel firmware check admits the J773g on 27.2 | linux | Booted as its own branch on the current upstream integration branch: 10 CPUs, NVMe, userspace | New pull request, not opened |
+| Loader admits the J773g on 27.2 | aura | Booted as the existing pull request head plus one commit | One commit to add to [aura #113](https://github.com/aurora-silicon/aura/pull/113) |
+| Loader hands the display regions off on 27.2 | aura | Booted as the existing pull request head plus two commits; HDMI connected at 3840x2160, 60 Hz | Two commits to add to [aura #258](https://github.com/aurora-silicon/aura/pull/258) |
+| Kernel display on firmware 27.2 (DCP and DART) | linux | Booted as a five-commit branch on our integration test kernel with the firmware-check change; HDMI at 3840x2160, 60 Hz | New pull request, not opened. Builds on the device tree and PHY work in [linux #1192](https://github.com/aurora-silicon/linux/pull/1192) and [linux #1940](https://github.com/aurora-silicon/linux/pull/1940) |
+| Ethernet device tree | linux | The one commit of [linux #1898](https://github.com/aurora-silicon/linux/pull/1898) on the firmware-check change: 2.5 Gb/s link, DHCP, ping. Warm restarts only | No change to the pull request |
+| PMP on 27.2 | linux | The commits of [linux #1191](https://github.com/aurora-silicon/linux/pull/1191) plus one new commit, on the firmware-check change: the PMP firmware starts and the report driver binds. PMP thermal does not work | PMP half only; the GPU half cannot run on 27.2 |
+| GPU | linux, mesa | Not working. The loader disables the GPU on 27.2, so [linux #1718](https://github.com/aurora-silicon/linux/pull/1718) and [mesa #193](https://github.com/aurora-silicon/mesa/pull/193) cover the 26.6.2 firmware only | Needs a new GPU backend for the 27.2 firmware; not started |
+| USB 2 fallback and Thunderbolt 3 role | linux | Not shown. Rear USB 2 host works without [linux #1702](https://github.com/aurora-silicon/linux/pull/1702) and [linux #1703](https://github.com/aurora-silicon/linux/pull/1703); the port they change has not been tested with a device | On hold |
+| NixOS image | nixos-aurora | [nixos-aurora #302](https://github.com/aurora-silicon/nixos-aurora/pull/302) carries a kernel for 26.6.2 only and does not boot on 27.2 as built | Needs a new kernel build and configuration fixes; see [NixOS](nixos.md) |
+
+"Booted" means one boot of that exact tree on one machine unless the row says
+otherwise. Not tested anywhere: a 26.6.2 stub with these changes, and any
+other M4 board.
+
 ## Fork branches
 
 | Repository | Branch | Head | Upstream base | Behind | Ahead | State |

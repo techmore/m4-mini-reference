@@ -1,5 +1,12 @@
 # HDMI/display bring-up on J773g
 
+> **This page describes the 26.6.2 (25G83) stub.** On the macOS 27.2 (26B123)
+> stub this path does not run: the display firmware protocol differs. HDMI
+> does work on 27.2 at 3840x2160, 60 Hz with a separate set of loader and
+> kernel changes that are **tested locally, not yet upstream**. See the
+> [27.2 section](#on-the-272-stub) at the end of this page and
+> [Booting on the 27.2 stub](booting-27-2-stub.md).
+
 This is the short, code-pointer-first description of the **working Linux
 sequence**. It is hardware bring-up documentation: do not transplant it into a cold
 loader or change power/firmware ordering without a recovery-qualified trial.  It describes the retained-iBoot DCP path used by the run-59
@@ -85,3 +92,30 @@ modeset/surface/swap work.  Source: `private evidence receipt` and the run-59 re
 referenced there.
 
 Public code history: [Linux HDMI topic commit 396679fe](https://github.com/techmore/linux/commit/396679fe3659) and [Aura boot-HDMI commit 7c5ab9a3](https://github.com/techmore/aura/commit/7c5ab9a3d90b).
+
+## On the 27.2 stub
+
+Tested locally on one machine on 2026-11-18, not yet upstream.
+
+- **Result.** `HDMI-A-1` connects with 41 modes and a KDE Wayland session
+  scans out at 3840x2160, 60 Hz. The output is driven through the main DCP
+  (`dcp@30ae00000`), as on 26.6.2.
+- **Loader.** Stage 2 has to admit the J773g on 27.2 and publish the DCP's
+  memory regions (the OS log region, the display frontend segment and the
+  PIODMA segment). Without that the kernel has only the 640x1136 boot
+  framebuffer and no HDMI.
+- **Kernel.** The display IOMMU (DART) driver accepts the 27.2 handoff and
+  preserves the firmware's mappings. The DCP driver takes a firmware 27 path
+  with the 27.2 call table. The display-port controller service is on
+  endpoint `0x24` and the port service on `0x2a`; a first attempt that looked
+  for the port service on `0x2c` found none.
+- **Both halves are needed.** The loader change alone, or the kernel change
+  alone, gives no picture.
+- **Not working or untested on 27.2.** No EDID on the connector (modes come
+  from the firmware); no HDMI audio; hot-plug, mode changes, display power
+  management and suspend untested; no picture before Linux starts. The
+  firmware logs a few non-fatal errors during bring-up that are not yet
+  explained.
+- **No GPU.** The compositor renders in software, which is very slow at 4K.
+- **26.6.2 not re-tested.** The working order above has not been re-run with
+  the 27.2 changes in the kernel.
