@@ -1,5 +1,13 @@
 # HDMI/display bring-up on J773g
 
+> **This page describes the 26.6.2 (25G83) stub.** On the macOS 27.2 (26B123)
+> stub this path does not run: the display firmware protocol differs. HDMI
+> does work on 27.2 at 3840x2160, 60 Hz with open pull requests plus kernel
+> display commits that are **not yet in any pull request; nothing is merged
+> upstream**. See the
+> [27.2 section](#on-the-272-stub) at the end of this page and
+> [Booting on the 27.2 stub](booting-27-2-stub.md).
+
 This is the short, code-pointer-first description of the **working Linux
 sequence**. It is hardware bring-up documentation: do not transplant it into a cold
 loader or change power/firmware ordering without a recovery-qualified trial.  It describes the retained-iBoot DCP path used by the run-59
@@ -85,3 +93,36 @@ modeset/surface/swap work.  Source: `private evidence receipt` and the run-59 re
 referenced there.
 
 Public code history: [Linux HDMI topic commit 396679fe](https://github.com/techmore/linux/commit/396679fe3659) and [Aura boot-HDMI commit 7c5ab9a3](https://github.com/techmore/aura/commit/7c5ab9a3d90b).
+
+## On the 27.2 stub
+
+Tested locally on one machine on 2026-11-18 and 2026-11-19. Nothing is
+merged upstream.
+
+- **Result.** `HDMI-A-1` connects with 41 modes and a KDE Wayland session
+  scans out at 3840x2160, 60 Hz. A second monitor ran at 1080p. The output
+  is driven through the main DCP (`dcp@30ae00000`), as on 26.6.2.
+- **Loader.** Stage 2 has to publish the DCP's memory regions (the OS log
+  region, the display frontend segment and the PIODMA segment). Without that
+  the kernel has only the 640x1136 boot framebuffer and no HDMI. This is
+  open as [aura #199](https://github.com/aurora-silicon/aura/pull/199), which hands off the HDMI DCP and its display frontend
+  through the shared M4 DCP path and selects by what the Apple device tree
+  describes, not by board name or OS version.
+- **Kernel.** The base is [linux #1192](https://github.com/aurora-silicon/linux/pull/1192) (open). The firmware-27 commits
+  described here are not yet in any pull request. The display IOMMU (DART)
+  driver accepts the 27.2 handoff and preserves the firmware's mappings. The DCP driver takes a firmware 27 path
+  with the 27.2 call table. The display-port controller service is on
+  endpoint `0x24` and the port service on `0x2a`; a first attempt that looked
+  for the port service on `0x2c` found none.
+- **Both halves are needed.** The loader change alone, or the kernel change
+  alone, gives no picture.
+- **Not working or untested on 27.2.** No EDID on the connector (modes come
+  from the firmware); no HDMI audio; a monitor attached after boot is not
+  picked up; mode changes, display power management and suspend untested; no
+  picture before Linux starts. The
+  firmware logs a few non-fatal errors during bring-up that are not yet
+  explained.
+- **No GPU.** The compositor renders in software, which is very slow.
+- **26.6.2 not re-tested on this machine.** The working order above has not
+  been re-run with the 27.2 changes in the kernel. DjDeveloperr runs pull
+  request #1192 as the default boot on his unit on 26.6.2.
