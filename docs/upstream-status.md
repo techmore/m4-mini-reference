@@ -2,7 +2,7 @@
 
 > Generated snapshot of public fork branches; refresh before relying on status.
 
-Upstream work is **FROZEN**. A listed PR, issue, or queued action is status only, not permission to post.
+Upstream work follows a release workflow: a change is pushed or posted only with the owner's go-ahead, after an independent adversarial review and a hardware test of the exact tree. A listed PR, issue, or queued action is status only, not permission to post.
 
 Source: public GitHub branch and comparison APIs.
 
