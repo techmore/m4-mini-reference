@@ -1,23 +1,32 @@
 # Booting on the 27.2 stub
 
-> **Status: tested locally, not yet upstream.** Everything on this page was
-> run on one M4 Mac mini (J773g) with locally built loader and kernel images
-> on 2026-11-18. None of it is merged in the upstream projects, and none of
-> it is upstream support for this machine. Treat it as a lab record.
+> **Status on 2026-11-19: open pull requests, nothing merged upstream.**
+> Everything on this page was run on one M4 Mac mini (J773g) with locally
+> built loader and kernel images, on 2026-11-18 and 2026-11-19. The changes
+> are now open pull requests in the Aurora project, except the firmware-27
+> display commits, which are not yet in any pull request. None of it is
+> merged, and none of it is upstream support for this machine. Treat it as a
+> lab record. The pull requests are listed in
+> [Upstream status](upstream-status.md).
 
 ## Summary
 
 With the macOS 27.2 (build 26B123) boot stub, the J773g now boots Linux
 unattended through the normal chain (iBoot, Aura Stage 1, Stage 2 on the ESP,
-U-Boot, GRUB, NixOS) to a KDE desktop on HDMI at 3840x2160, 60 Hz.
+U-Boot, GRUB, NixOS) to SSH and to a KDE desktop on HDMI.
 
-Working: 10 CPUs, NVMe, 2.5 Gb Ethernet, HDMI video, USB 2 on the front
-ports and on two rear ports.
+Working, with the open pull requests applied: 10 CPUs, NVMe, 2.5 Gb/s
+Ethernet, a USB keyboard and mouse on the front ports at USB 2, and a rear
+port as a USB device at USB 2. HDMI video works at 3840x2160, 60 Hz on one
+monitor and at 1080p on another, and needs additional firmware-27 display
+commits that are not yet in any pull request. Wi-Fi associates on a WPA2
+network after its driver is loaded by hand.
 
-Not working or not started: GPU acceleration (the desktop is drawn in
-software and is very slow at 4K), Wi-Fi, Bluetooth, audio, Thunderbolt/USB4.
-Suspend is untested. Thermal management is partial. The SSD controller
-sometimes fails to start; see [Known problems](#known-problems).
+Not working or not done: GPU acceleration (the desktop is drawn in software
+and is very slow), Bluetooth, HDMI hot-plug after boot, HDMI audio,
+Thunderbolt, SuperSpeed on the front ports, and suspend. Thermal management
+is partial. The SSD controller sometimes fails to start on a reboot; see
+[Known problems](#known-problems).
 
 Until 2026-11-15 this machine ran on a 26.6.2 (25G83) stub, which is what the
 other pages of this reference describe. After the stub was reinstalled on
@@ -57,6 +66,13 @@ smp: Brought up 1 node, 10 CPUs
 t8132-platform-handoff: supplied 0 platform nodes, 137 PMGR policy properties
 ```
 
+**Now.** The change is open as [linux #2317](https://github.com/aurora-silicon/linux/pull/2317). It does not add 27.2 to the
+check: it removes the version test, so the PMGR policy is applied on any
+firmware. The pull request records two boots on this machine on 2026-11-19,
+about five minutes each, with a plain kernel command line (none of the
+bring-up parameters). They ran on an earlier commit of the branch than its
+current head.
+
 **Limits.** The panic message was never captured, because memory is cleared
 across the reset, so which access was fatal is unknown. The changed kernel has
 not been booted on 26.6.2, and no other M4 board was tested.
@@ -69,7 +85,7 @@ The J773g's HDMI port is driven by the display coprocessor (DCP), which runs
 Apple firmware. The 26.6.2 path described in [HDMI/display](hdmi-display.md)
 did not run on 27.2. Three layers needed changes:
 
-| Layer | What it did on 27.2 before | What changed |
+| Layer | What it did on 27.2 before | What changed in the 2026-11-18 local build |
 |---|---|---|
 | Loader (Stage 2) | Refused the M4 display handoff for this board on anything but 26.6.2 and kept only the boot framebuffer | Admits the J773g on 27.2 and publishes the display coprocessor's memory regions (its log region, the frontend segment and the PIODMA segment) in the device tree, leaving the IOMMU tables untouched |
 | Kernel IOMMU driver (DART) | Left the display IOMMUs alone on any firmware but 26.6.2 | Accepts the 27.2 handoff for the Mac mini's main DCP and preserves the firmware's existing mappings without writing to them |
@@ -90,10 +106,20 @@ apple-dcp 30ae00000.dcp: dcp_hotplug() connected:1 valid_mode:0 nr_modes:41
 
 The connector reports as connected with 41 modes and the compositor scans out
 at 3840x2160, 60 Hz. The loader half and the kernel half only work together:
-either one alone gives no picture.
+either one alone gives no picture. On 2026-11-19 a second monitor ran at
+1080p.
 
-**Limits.** Hot-plug, mode changes, display power management and suspend are
-untested. The connector exposes no EDID; the mode list comes from the
+**Now.** The loader half was reworked and is open as [aura #199](https://github.com/aurora-silicon/aura/pull/199), which hands
+off the HDMI DCP and its display frontend through the shared M4 DCP path;
+[aura #258](https://github.com/aurora-silicon/aura/pull/258) was folded into it and closed. It no longer admits a board or an
+OS version by name: it selects by what the Apple device tree describes. The
+kernel display work it pairs with is [linux #1192](https://github.com/aurora-silicon/linux/pull/1192) (open). The firmware-27
+kernel commits described in the table are not yet in any pull request; the
+plan is to add them to #1192.
+
+**Limits.** A monitor attached after boot is not picked up (no hot-plug).
+Mode changes, display power management and suspend are untested. The
+connector exposes no EDID; the mode list comes from the
 firmware. HDMI audio does not work. The 26.6.2 path has not been re-tested
 with these changes present. There is still no picture before Linux starts
 (nothing from iBoot or the loader on 27.2).
@@ -167,60 +193,67 @@ the cause in minutes; the source change followed.
 
 ## Support matrix on the 27.2 stub
 
-State on 2026-11-18, one machine, local builds.
+State on 2026-11-19, one machine, local builds of the open pull requests
+plus the firmware-27 display commits. The boot, Ethernet, HDMI, GPU, Wi-Fi,
+Bluetooth, USB and Thunderbolt rows were updated on 2026-11-19. The other
+rows are from 2026-11-18 on the earlier local build and were not re-checked.
 
 | Function | Status | Notes |
 |---|---|---|
-| Unattended boot through the normal chain | Works | See the SSD controller entry under Known problems |
+| Unattended boot through the normal chain | Works | Reaches SSH. See the SSD controller entry under Known problems |
 | CPUs | Works | 10 online; frequency scaling and idle states active |
 | NVMe | Works | |
-| Ethernet | Works | 2.5 Gb/s, full duplex |
-| HDMI video | Works | 3840x2160 at 60 Hz through the main DCP |
+| Ethernet | Works | 2.5 Gb/s. [linux #1898](https://github.com/aurora-silicon/linux/pull/1898) (open), tested on two units (the second by DjDeveloperr, on 26.6.2) |
+| HDMI video | Works | 3840x2160 at 60 Hz on one monitor, 1080p on another. Needs firmware-27 display commits that are not yet in any pull request |
 | HDMI EDID | Not working | The connector reports no EDID |
-| HDMI hot-plug, mode change, display power management | Untested | |
+| HDMI hot-plug | Not working | A monitor attached after boot is not picked up |
+| HDMI mode change, display power management | Untested | |
 | HDMI audio | Not working | No sound card |
-| GPU acceleration | Not started | The loader disables the GPU on 27.2; the desktop is software-rendered |
-| Wi-Fi | Not working | Hardware is detected; the driver is held back (see Known problems) |
-| Bluetooth | Not working | Same as Wi-Fi |
-| Rear USB-C ports, USB 2 host | Works on two ports | Keyboard and mouse enumerate. The third port held the debug cable; host role there is untested |
-| Front USB-C ports (internal two-port hub) | Works at USB 2 speed | |
-| USB 3 speeds | Not working or untested | Front: the USB 3 side of the hub is absent. Rear: only USB 2 devices were tried |
-| Thunderbolt / USB4 | Not started | |
+| GPU acceleration | Not working | The loader disables the GPU on 27.2; the desktop is software-rendered and very slow |
+| Wi-Fi | Partly | Associates on a WPA2 network after the driver is loaded by hand. It does not load by itself; the reason is not known |
+| Bluetooth | Not working | The Apple device tree carries no calibration blob for the driver. DjDeveloperr's [linux #2235](https://github.com/aurora-silicon/linux/pull/2235) (open) addresses this; it has not been tested on this machine |
+| Rear USB-C ports, USB 2 host | Worked on two ports on 2026-11-18 | Keyboard and mouse enumerated on the earlier local build. The third port held the debug cable. A confirming test on the current build is still to do |
+| Rear USB-C port as a USB device | Works at USB 2 speed | With [linux #1702](https://github.com/aurora-silicon/linux/pull/1702) (open) |
+| Front USB-C ports (internal two-port hub) | Works at USB 2 speed | USB keyboard and mouse |
+| USB 3 speeds | Not working or untested | Front: SuperSpeed does not work. Rear: nothing above USB 2 is claimed |
+| Thunderbolt / USB4 | Not working | [linux #1703](https://github.com/aurora-silicon/linux/pull/1703) is a draft |
 | Headphone jack, speaker | Not working | No sound card |
 | Sensors and fan speed reading | Works | |
 | Fan control, thermal zones | Not present | Thermal management is partial: the PMP firmware starts, its temperature sensors return errors |
 | Suspend | Untested | |
 | Clock (RTC), watchdog | Works | |
 | Power button | Untested | |
-| Always-on processor (AOP), camera processor (ISP) | Disabled | Disabled by the loader on this board, by design |
+| Always-on processor (AOP), camera processor (ISP) | Disabled on 2026-11-18 | The earlier local loader disabled both. [aura #113](https://github.com/aurora-silicon/aura/pull/113) (open) hands the AOP off and applies a rule for an absent ISP, selected by ADT property |
 
 ## Known problems
 
-- **The SSD controller sometimes fails to start.** In a run of ten
-  consecutive restarts, one failed; about twenty other starts the same evening
-  succeeded. The cause is unknown and the loader's retries did not recover the
-  failed boot. When it happens the loader finds no disk, stops in its debug
-  mode and waits for a restart; the restart after the recorded failure booted
-  normally. A machine that must come back unattended is not reliable yet.
-- **The desktop is very slow at 4K.** There is no GPU driver for this
-  firmware, so the compositor draws on the CPU. One measurement showed about
-  one frame per second, which makes input look dead.
-- **No Wi-Fi or Bluetooth.** On this kernel the image's vendor-firmware
-  service fails early (it tries to load a driver the kernel does not have) and
-  never releases the Wi-Fi and Bluetooth drivers it holds back. A fix for the
-  service exists and passes its unit test, but has not been booted.
+- **The SSD controller sometimes fails to start on a reboot.** This has been
+  seen 8 times so far. When it happens the loader finds no disk, stops in its
+  debug mode and waits; a reboot recovers it. It needs a fix in Stage 1,
+  which is not written. A machine that must come back unattended is not
+  reliable yet.
+- **The desktop is very slow.** There is no GPU driver for this firmware, so
+  the compositor draws on the CPU. One measurement at 4K showed about one
+  frame per second, which makes input look dead.
+- **Wi-Fi needs its driver loaded by hand.** After that it associates on a
+  WPA2 network. Why the driver does not load by itself is not known.
+- **No Bluetooth.** The driver needs a calibration blob that the Apple device
+  tree on this machine does not carry. DjDeveloperr's [linux #2235](https://github.com/aurora-silicon/linux/pull/2235) (open) loads
+  it from a firmware file instead; it has not been tested on this machine.
+- **HDMI hot-plug and HDMI audio do not work.** A monitor has to be attached
+  before boot.
 - **The firewall service fails**, because the test kernel lacks one netfilter
   module the NixOS firewall needs. The test system runs with no packet filter.
-- **Bring-up options are still on the kernel command line** in the installed
-  system (the ones that keep unused clocks and power domains on). A reduced
-  kernel was booted once without them and stayed up; the full display kernel
-  has not been.
+- **Bring-up kernel options.** [linux #2317](https://github.com/aurora-silicon/linux/pull/2317)
+  booted twice without them (the ones that keep unused clocks and power
+  domains on), about five minutes each. A longer run has not been done.
 - **Cold starts are thinly covered.** Most test boots were warm restarts.
-- **Nothing here was re-tested on a 26.6.2 stub.**
+- **Nothing here was re-tested on a 26.6.2 stub on this machine.**
+  DjDeveloperr runs [linux #1192](https://github.com/aurora-silicon/linux/pull/1192) as the default boot on his unit on 26.6.2.
 
 ## Where the changes are
 
-The loader and kernel changes are local branches being prepared for
-submission. They are listed, with the existing pull requests they relate to,
-in [Upstream status](upstream-status.md). Nothing on this page should be read
-as accepted, reviewed or supported upstream.
+The loader and kernel changes are open pull requests in the Aurora project,
+listed in [Upstream status](upstream-status.md). The firmware-27 display
+commits are the exception: they are not yet in any pull request. Nothing on
+this page should be read as merged, accepted or supported upstream.

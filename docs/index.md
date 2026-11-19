@@ -8,12 +8,16 @@ evidence is marked **unverified**.
 
 ## Current status
 
-**Tested locally, not yet upstream.** On the macOS 27.2 (26B123) boot stub the
-J773g boots Linux unattended to a 4K HDMI desktop, with 10 CPUs, NVMe, 2.5 Gb
-Ethernet and USB 2. GPU acceleration, Wi-Fi, Bluetooth, audio and
-Thunderbolt/USB4 do not work, and the SSD controller sometimes fails to start.
-This was measured on one machine with local builds; none of it is merged in
-the upstream projects. Details, the support matrix and known problems are in
+**Open pull requests, nothing merged upstream (2026-11-19).** On the macOS
+27.2 (26B123) boot stub the J773g boots Linux unattended to SSH, with 2.5 Gb/s
+Ethernet, USB 2, and HDMI at 4K60 on one monitor and 1080p on another. HDMI
+needs display commits that are not yet in any pull request. Wi-Fi associates
+after its driver is loaded by hand. GPU acceleration, Bluetooth, HDMI
+hot-plug, HDMI audio, Thunderbolt and suspend do not work or are not done,
+and the SSD controller sometimes fails to start on a reboot. This was
+measured on one machine with local builds of the open pull requests, which
+are listed in [Upstream status](upstream-status.md). Details, the support
+matrix and known problems are in
 [Booting on the 27.2 stub](booting-27-2-stub.md).
 
 The other pages were written for the 26.6.2 (25G83) stub this machine used

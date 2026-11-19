@@ -4,8 +4,8 @@
 > machine has since been reinstalled on the macOS 27.2 (26B123) stub, so the
 > partition map and the run-59 tuples below describe the earlier install. The
 > chain and the one-shot selectors are unchanged and were used for the 27.2
-> tests; see [Booting on the 27.2 stub](booting-27-2-stub.md) (tested
-> locally, not yet upstream).
+> tests; see [Booting on the 27.2 stub](booting-27-2-stub.md) (open pull
+> requests, nothing merged upstream).
 
 ## The chain
 

@@ -6,29 +6,45 @@ Upstream work is **FROZEN**. A listed PR, issue, or queued action is status only
 
 Source: public GitHub branch and comparison APIs.
 
-## 27.2 stub work (2026-11-18): tested locally, not yet upstream
+## 27.2 stub work: open pull requests, nothing merged (2026-11-19)
 
-The work described in [Booting on the 27.2 stub](booting-27-2-stub.md) exists
-as local branches only. It is not in any pull request, the open pull requests
-below have not been updated with it, and nothing here is upstream support for
-the J773g. The fork-branch table further down was generated on 2026-11-13 and
-does not include these branches.
+The work described in [Booting on the 27.2 stub](booting-27-2-stub.md) is now
+in the pull requests below, in the `aurora-silicon` repositories. None of the
+open ones is merged, and nothing here is upstream support for the J773g. One
+piece is not in any pull request yet: the kernel display commits for
+firmware 27, which HDMI on 27.2 needs.
 
-| Piece | Repository | Tested locally on 27.2 | Where it is headed |
+The approach changed on 2026-11-19: the reworked pull requests select
+behaviour by what the device tree describes instead of by board name or OS
+version. Pull request #2317 removes the firmware-version test, #113 and #199
+select by Apple device tree (ADT) property, and #253 by geometry. Some
+board-specific terms remain in #2317 and #1191; those pull requests say
+which and why.
+
+The fork-branch table further down was generated on 2026-11-13 and does not
+include the branches behind these pull requests.
+
+| Piece | Pull request | State on 2026-11-19 | Tested |
 |---|---|---|---|
-| Kernel firmware check admits the J773g on 27.2 | linux | Booted as its own branch on the current upstream integration branch: 10 CPUs, NVMe, userspace | New pull request, not opened |
-| Loader admits the J773g on 27.2 | aura | Booted as the existing pull request head plus one commit | One commit to add to [aura #113](https://github.com/aurora-silicon/aura/pull/113) |
-| Loader hands the display regions off on 27.2 | aura | Booted as the existing pull request head plus two commits; HDMI connected at 3840x2160, 60 Hz | Two commits to add to [aura #258](https://github.com/aurora-silicon/aura/pull/258) |
-| Kernel display on firmware 27.2 (DCP and DART) | linux | Booted as a five-commit branch on our integration test kernel with the firmware-check change; HDMI at 3840x2160, 60 Hz | New pull request, not opened. Builds on the device tree and PHY work in [linux #1192](https://github.com/aurora-silicon/linux/pull/1192) and [linux #1940](https://github.com/aurora-silicon/linux/pull/1940) |
-| Ethernet device tree | linux | The one commit of [linux #1898](https://github.com/aurora-silicon/linux/pull/1898) on the firmware-check change: 2.5 Gb/s link, DHCP, ping. Warm restarts only | No change to the pull request |
-| PMP on 27.2 | linux | The commits of [linux #1191](https://github.com/aurora-silicon/linux/pull/1191) plus one new commit, on the firmware-check change: the PMP firmware starts and the report driver binds. PMP thermal does not work | PMP half only; the GPU half cannot run on 27.2 |
-| GPU | linux, mesa | Not working. The loader disables the GPU on 27.2, so [linux #1718](https://github.com/aurora-silicon/linux/pull/1718) and [mesa #193](https://github.com/aurora-silicon/mesa/pull/193) cover the 26.6.2 firmware only | Needs a new GPU backend for the 27.2 firmware; not started |
-| USB 2 fallback and Thunderbolt 3 role | linux | Not shown. Rear USB 2 host works without [linux #1702](https://github.com/aurora-silicon/linux/pull/1702) and [linux #1703](https://github.com/aurora-silicon/linux/pull/1703); the port they change has not been tested with a device | On hold |
-| NixOS image | nixos-aurora | [nixos-aurora #302](https://github.com/aurora-silicon/nixos-aurora/pull/302) carries a kernel for 26.6.2 only and does not boot on 27.2 as built | Needs a new kernel build and configuration fixes; see [NixOS](nixos.md) |
+| PMGR policy applied on any firmware | [linux #2317](https://github.com/aurora-silicon/linux/pull/2317) | Open, ready for review | This is what lets a 27.2 stub boot. J773g on 27.2: the pull request records two boots of about five minutes each with a plain kernel command line, on an earlier commit of the branch. Not tested: 26.6.2 with the change, any other T8132 board |
+| Ethernet | [linux #1898](https://github.com/aurora-silicon/linux/pull/1898) | Open, ready for review | 2.5 Gb/s on our unit on 26.6.2 and 27.2. Tested on two units: DjDeveloperr ran it on a gigabit-model J773g on 26.6.2 |
+| HDMI display | [linux #1192](https://github.com/aurora-silicon/linux/pull/1192) | Open, ready for review | DjDeveloperr runs it as the default boot on his unit on 26.6.2. On 27.2 our unit also needs the firmware-27 display commits, which are not yet in any pull request: with them, 4K60 on one monitor and 1080p on another |
+| PMP session | [linux #1191](https://github.com/aurora-silicon/linux/pull/1191) | Open, ready for review | Now based on DjDeveloperr's [linux #2232](https://github.com/aurora-silicon/linux/pull/2232), with his [linux #2239](https://github.com/aurora-silicon/linux/pull/2239); both are open |
+| GPU firmware admission | [linux #1718](https://github.com/aurora-silicon/linux/pull/1718) | Closed | Superseded by DjDeveloperr's #2232. The GPU does not work on 27.2 |
+| USB 2 for USB4/Thunderbolt partners | [linux #1702](https://github.com/aurora-silicon/linux/pull/1702) | Open, ready for review | With it, a rear port works as a USB device at USB 2 on our unit |
+| USB role for Thunderbolt 3 | [linux #1703](https://github.com/aurora-silicon/linux/pull/1703) | Draft | Thunderbolt does not work |
+| DPTX register binding | [linux #1940](https://github.com/aurora-silicon/linux/pull/1940) | Closed | |
+| Loader: USB 3 calibration, AOP handoff, absent-ISP rule | [aura #113](https://github.com/aurora-silicon/aura/pull/113) | Open, ready for review | Selected by ADT property |
+| Loader: HDMI DCP and display frontend through the shared M4 path | [aura #199](https://github.com/aurora-silicon/aura/pull/199) | Open, ready for review | [aura #258](https://github.com/aurora-silicon/aura/pull/258) was folded into it and closed |
+| Loader: live ANS from an older Stage 1 | [aura #244](https://github.com/aurora-silicon/aura/pull/244) | Closed | Not needed |
+| Loader: M4 Pro mini MCC admission by geometry | [aura #253](https://github.com/aurora-silicon/aura/pull/253) | Open, ready for review | Host-tested only |
+| Bluetooth calibration from a firmware file | [linux #2235](https://github.com/aurora-silicon/linux/pull/2235) (DjDeveloperr's) | Open | Not yet tested on our unit, where Bluetooth does not work |
+| Mesa compute-shader fix | [mesa #193](https://github.com/aurora-silicon/mesa/pull/193) | Closed | Superseded by [mesa #309](https://github.com/aurora-silicon/mesa/pull/309), another contributor's work |
+| NixOS image profile | [nixos-aurora #302](https://github.com/aurora-silicon/nixos-aurora/pull/302) | Closed | A fresh install on 27.2 still does not boot by itself; see [NixOS](nixos.md) |
 
-"Booted" means one boot of that exact tree on one machine unless the row says
-otherwise. Not tested anywhere: a 26.6.2 stub with these changes, and any
-other M4 board.
+Unless a row says otherwise, results are from one machine on the 27.2 stub.
+DjDeveloperr and RyanTheTide (maintainer) have reviewed or commented on pull
+requests #1191, #1192 and #113.
 
 ## Fork branches
 

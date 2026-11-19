@@ -2,12 +2,13 @@
 
 > **This page describes the 26.6.2 (25G83) install as of 2026-11-13.** The
 > machine has since been reinstalled on the macOS 27.2 (26B123) stub. What is
-> known about NixOS there is in the next section; it is **tested locally, not
-> yet upstream**.
+> known about NixOS there is in the next section; the changes it depends on
+> are **open pull requests, and nothing is merged upstream**.
 
 ## On the 27.2 stub
 
-State on 2026-11-18, one machine, local builds. Background in
+State on 2026-11-18, one machine, local builds, with 2026-11-19 updates
+where a line says so. Background in
 [Booting on the 27.2 stub](booting-27-2-stub.md).
 
 - **It boots unattended to KDE**, through Stage 1, Stage 2, U-Boot and GRUB,
@@ -18,19 +19,26 @@ State on 2026-11-18, one machine, local builds. Background in
   only after the kernel image on the boot partition was replaced by hand with
   a 27.2-capable build (the Stage 2 on the ESP was replaced as well; whether
   that was needed is not established). The image has to be rebuilt around
-  such a kernel before a fresh install can boot by itself.
-- **Two services fail on every boot** and the system reports itself as
-  degraded. See the table below.
+  such a kernel before a fresh install can boot by itself. [nixos-aurora #302](https://github.com/aurora-silicon/nixos-aurora/pull/302), an
+  opt-in profile with a prebuilt kernel for this machine, was closed on
+  2026-11-19.
+- **Two services failed on every boot** on 2026-11-18 and the system
+  reported itself as degraded. See the table below; it was not re-checked on
+  2026-11-19.
+- **Wi-Fi associates on a WPA2 network** (2026-11-19) after its driver is
+  loaded by hand.
+  **Bluetooth does not work**: the driver finds no calibration blob. See
+  [Booting on the 27.2 stub](booting-27-2-stub.md#known-problems).
 - **Bug A below is not seen on 27.2.** The ESP mounts from the identifier in
   `fstab`, and the `apple_wdt` step in the initrd succeeds.
-- **The desktop is software-rendered** and very slow at 4K; there is no GPU
+- **The desktop is software-rendered** and very slow; there is no GPU
   driver for the 27.2 firmware.
 - **Suspend is untested** on 27.2. The advice under "Suspend is disabled"
   still applies.
 
 | Failing service | Effect | Cause |
 |---|---|---|
-| Vendor firmware service | Wi-Fi and Bluetooth drivers stay held back, so neither works | The script loads a driver for the always-on processor, which this kernel does not have and which the loader disables on this board, and it stops there. A change to the script passes its unit test but has not been booted |
+| Vendor firmware service | On 2026-11-18 the Wi-Fi and Bluetooth drivers stayed held back. Whether this is why the Wi-Fi driver still has to be loaded by hand is not established | The script loads a driver for the always-on processor, which this kernel does not have and which the loader disables on this board, and it stops there. A change to the script passes its unit test but has not been booted |
 | Firewall | No packet filter is active | The test kernel lacks a netfilter match module the NixOS firewall always uses. This is a kernel configuration fault, not an image fault |
 
 ## How it booted on 26.6.2
